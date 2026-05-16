@@ -13,10 +13,21 @@ Goalify is an interview skill before it is a drafting skill. Its job is to clari
 
 Use official Codex guidance as the baseline: `/goal` is for long-running work with one objective, a validation loop, and a clear end state. It is experimental and requires `features.goals` to be enabled, either through `/experimental` or `[features] goals = true` in `config.toml`.
 
-Goalify has two products:
+Goalify has three separate products:
 
-- A PRD document that captures the project's purpose, users, principles, features, missing pieces, quality criteria, non-goals, and open decisions.
-- A `/goal` prompt generated from that PRD once the product outcome is clear enough to execute.
+- A tight PRD/spec document that captures only the product and development target: purpose, users, key terms, principles, features, quality criteria, non-goals, acceptance criteria, and product-relevant open decisions.
+- A separate discovery notes document for process material: repo evidence, AGENTS.md observations, interview history, assumptions, conflicts, history notes, discarded options, and the agent's reasoning trail.
+- A `/goal` prompt shown in chat, not saved inside the PRD. The prompt should reference the PRD/spec document by path and avoid embedding discovery notes.
+
+## Document Boundaries
+
+Keep the PRD/spec clean. It is the document a later implementation agent should read to know what product state to build toward.
+
+- Do not put interview transcripts, clarification history, repo-history notes, evidence lists, AGENTS.md commentary, agent reasoning, or process notes in the PRD/spec.
+- Translate only product-relevant constraints into the PRD/spec. For example, if repo instructions require privacy preservation, write the privacy constraint, not a note about having read `AGENTS.md`.
+- Put discovery material in a separate notes document, usually next to the PRD/spec.
+- The `/goal` prompt should be returned in chat as a copyable prompt. It should reference the PRD/spec path and only mention discovery notes as optional background if the user explicitly wants that.
+- If the user asks for files, create at least two separate files: one PRD/spec and one discovery notes file. Never make the PRD/spec a mixed working log.
 
 ## Non-Negotiable Interview Contract
 
@@ -47,22 +58,27 @@ When Goalify is used for a PRD, roadmap, product goal, feature goal, or Codex `/
    - Use `/goal` for migrations, large refactors, release hardening, multi-step test repair, benchmark/eval improvement, prototype completion, documentation refreshes tied to validation, and deployment retry loops.
    - Use PRD-first mode when the user asks to be interviewed, says the goal is unclear, asks for a proper document, asks for product principles, or wants to decide what the project should become before starting a long-running goal.
    - Do not force `/goal` onto a loose backlog, a vague aspiration, a one-file edit, or unrelated chores. In those cases, say that a normal prompt or a split set of goals is better.
-5. Choose the goal frame:
+5. Choose the document frame:
+   - Use a PRD/spec frame for the implementation target. Keep it short, normative, and free of process notes.
+   - Use a discovery-notes frame for evidence, interview answers, repo-history observations, AGENTS.md constraints, and unresolved reasoning.
+6. Choose the goal frame:
    - Use an engineering contract when the user wants implementation, validation, migration, tests, release hardening, or code quality work.
    - Use a PRD contract when the user wants the goal tied to product intent, stated goals, user workflow, non-goals, acceptance criteria, or roadmap shape.
    - Use a constructed PRD contract when the user asks to build the PRD by interviewing them and reviewing code or repo history. In this mode, do not rush to the `/goal`; build the PRD first.
-6. Choose one objective:
+7. Choose one objective:
    - Make it bigger than one turn but smaller than "improve this whole repo".
    - Anchor it in repo evidence: current scripts, docs, missing validation, stated non-goals, failing checks, release routine, or product goals.
-7. Draft the goal using the relevant contract:
+8. Draft the goal using the relevant contract:
    - Use `references/goal-contract-template.md` for engineering-contract goals.
    - Use `references/prd-goal-contract-template.md` for product/PRD-shaped goals.
    - Use `references/prd-interview-history-template.md` when the PRD must be constructed from user interview plus repo evidence.
    - Use `references/prd-document-template.md` when writing or revising the PRD document itself.
-8. Include the exact command or first message the user can paste into Codex:
+   - Use `references/discovery-notes-template.md` when writing the separate process/evidence document.
+9. Include the exact command or first message the user can paste into Codex:
    - Start with `/goal`.
    - Name the objective and the stopping condition in the first sentence.
-   - Keep the rest as structured instructions inside the same prompt.
+   - Reference the PRD/spec document path instead of pasting the PRD into the prompt.
+   - Keep discovery notes out of the goal prompt unless the user asks for extra background.
 
 ## Output Shape
 
@@ -70,8 +86,8 @@ For direct goal-generation mode, return:
 
 1. `Recommended /goal prompt` with one copyable prompt block.
 2. `Why this is goal-shaped` in 2-4 bullets.
-3. `PRD trace` when product goals are part of the request: product goal, users/workflow, acceptance criteria, non-goals, and evidence.
-4. `Evidence used` with the project files or commands that informed the goal.
+3. `PRD/spec path or summary` when product goals are part of the request: product goal, users/workflow, acceptance criteria, and non-goals.
+4. `Discovery notes path or summary` with the project files, interview trail, and commands that informed the goal.
 5. `Before running` with any setup or safety notes, including how to enable goals if needed.
 
 If the user asks for several options, provide at most three goal candidates and mark one as recommended.
@@ -81,9 +97,10 @@ For interview-led PRD mode, return work in stages:
 1. `Evidence pass`: what the repo already says, what history suggests, what the code contradicts, and what remains unknown.
 2. `Concepts to clarify`: key terms, overloaded words, conflicting definitions, and assumptions that would change the goal.
 3. `Interview`: ask one question at a time unless the user explicitly asks for a batch. For each question, provide a recommended answer based on the evidence and explain what decision it unlocks. End the message on the question and wait.
-4. `Working PRD`: update the PRD draft as decisions crystallise. If the user asked for a file, create or update it in the requested path; otherwise present it in chat.
-5. `Goal readiness`: say whether the PRD is ready for a `/goal`, and list the remaining decisions if it is not.
-6. `Recommended /goal prompt`: generate this only after the PRD has a concrete product outcome, acceptance criteria, non-goals, validation evidence, and at least one answered clarification question.
+4. `Discovery notes`: if writing files, capture evidence, interview history, AGENTS.md observations, assumptions, and process notes in a separate notes document.
+5. `Working PRD/spec`: write only the tight product/development specification. If the user asked for a file, create or update a separate PRD/spec file; otherwise present only the spec content in chat.
+6. `Goal readiness`: say whether the PRD/spec is ready for a `/goal`, and list remaining product decisions if it is not.
+7. `Recommended /goal prompt`: generate this only after the PRD/spec has a concrete product outcome, acceptance criteria, non-goals, validation evidence, and at least one answered clarification question. Return it in chat as a copyable prompt that references the PRD/spec path.
 
 ## Constructing a PRD
 
@@ -104,12 +121,12 @@ When the user wants the PRD constructed through interview plus repo review:
    - Call out vague outcomes such as "improve", "make better", "clean up", or "finish the app" and replace them with observable product states.
    - If the user uses a term that conflicts with repo docs or code behaviour, surface the conflict immediately and ask which meaning should win.
    - Use concrete scenarios and edge cases to force precision around users, workflows, data, permissions, and quality bars.
-4. Produce a proper PRD document:
-   - Separate evidence from inference.
-   - Mark assumptions that came from repo history rather than direct user confirmation.
-   - Include product principles, feature inventory, missing features, quality criteria, acceptance criteria, non-goals, constraints, and open decisions.
+4. Produce separate documents:
+   - Discovery notes: evidence, inference, repo-history observations, AGENTS.md notes, interview questions and answers, process notes, and unresolved assumptions.
+   - PRD/spec: product purpose, key terms, primary user, workflow, principles, feature inventory, quality criteria, acceptance criteria, non-goals, constraints, and product-relevant open decisions.
+   - Do not leak discovery notes into the PRD/spec.
    - Keep implementation detail out unless it changes product scope, validation, or constraints.
-5. Generate a `/goal` from the PRD only after the product outcome is clear.
+5. Generate a `/goal` from the PRD/spec only after the product outcome is clear. The `/goal` is a chat artifact; it should reference the PRD/spec file rather than becoming part of the PRD/spec.
 
 ## Goal Contract Requirements
 
@@ -126,7 +143,7 @@ Every generated goal must include:
 - Pause conditions for ambiguity, risky changes, secrets, destructive operations, permissions, or product decisions.
 - Final handoff requirements: changed files, commands run, evidence, remaining risks.
 
-When using a constructed PRD, also include the interview questions, the user's answers, the repo-history evidence, and unresolved assumptions.
+When using a constructed PRD, include interview questions, user answers, repo-history evidence, AGENTS.md observations, and unresolved process assumptions in discovery notes, not in the PRD/spec.
 
 Reject generic goals. A goal is not ready if it can be summarised as "improve the project", "make the docs better", "clean up the UI", or "finish the app" without naming the user-visible state, acceptance criteria, and validation evidence.
 
@@ -142,6 +159,7 @@ Reject ungrilled goals. A goal is not ready if no clarification question has bee
 - Never invent tests, scripts, CI, pricing, APIs, or release steps. If validation is missing, make "add minimal validation" an explicit checkpoint.
 - Do not hide unresolved product decisions inside implementation tasks. Ask, decide, or mark the assumption before drafting the `/goal`.
 - Prefer ending an early Goalify response with the next question rather than a completed artifact. The interview is the work.
+- Keep final implementation context cheap: the later `/goal` agent should read the PRD/spec, not a sprawling history of how the PRD/spec was produced.
 
 ## Reference
 
@@ -151,3 +169,4 @@ Read:
 - `references/prd-goal-contract-template.md` when drafting or reviewing a PRD/product-goal prompt.
 - `references/prd-interview-history-template.md` when constructing a PRD by interviewing the user and reviewing code/history.
 - `references/prd-document-template.md` when writing the PRD document before drafting the `/goal`.
+- `references/discovery-notes-template.md` when writing the separate evidence/interview/process notes document.
