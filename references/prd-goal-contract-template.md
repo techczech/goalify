@@ -1,6 +1,6 @@
 # PRD Goal Contract Template
 
-Use this template when a `/goal` prompt should be tied to product intent rather than only code elements. First reconstruct or read a PRD from the repository's own stated goals, then turn that PRD into a durable Codex goal. If the PRD is too generic, switch to `prd-interview-history-template.md` before drafting the goal.
+Use this template when a `/goal` prompt should be tied to product intent rather than only code elements. First reconstruct or read a PRD from the repository's own stated goals, then turn that PRD into a durable Codex goal. If the PRD is too generic or has not been clarified through at least one answered question, switch to `prd-interview-history-template.md` before drafting the goal.
 
 ```text
 /goal Complete <product outcome> without stopping until <verifiable product acceptance state>.
@@ -13,6 +13,7 @@ Read first:
 
 PRD trace:
 - Product purpose: <why the project exists, in the project's own terms>
+- Key terms: <canonical concepts and resolved ambiguities>
 - Target users/workflow: <who uses it and what they are trying to do>
 - Current stated goals: <features, behaviours, release goals, reliability goals>
 - Product principles: <rules that distinguish the right product from a generic improvement>
@@ -31,11 +32,12 @@ Scope:
 
 Checkpoints:
 1. Reconstruct or read the PRD from the stated-goal sources and save or report it before implementation.
-2. Verify the PRD is not a generic "improve this" brief: it must name product principles, feature boundaries, quality criteria, acceptance evidence, and non-goals.
-3. Map PRD acceptance criteria to code/docs/tests and identify the smallest product gap.
-4. Implement the smallest coherent change set that closes that gap.
-5. Validate with the repo's real checks and any manual/product evidence the PRD requires.
-6. Update docs only where behaviour or acceptance criteria changed.
+2. Verify that at least one clarification question has been asked and answered in this Goalify session. If not, ask one before drafting or executing the goal.
+3. Verify the PRD is not a generic "improve this" brief: it must name product principles, key terms, feature boundaries, quality criteria, acceptance evidence, and non-goals.
+4. Map PRD acceptance criteria to code/docs/tests and identify the smallest product gap.
+5. Implement the smallest coherent change set that closes that gap.
+6. Validate with the repo's real checks and any manual/product evidence the PRD requires.
+7. Update docs only where behaviour or acceptance criteria changed.
 
 Validation loop:
 - Run <repo command>.
@@ -50,6 +52,7 @@ Pause if:
 - The PRD source is ambiguous or conflicts with code behaviour.
 - The work requires a new product decision, privacy change, broad redesign, external service, secret, destructive command, release/publish step, or overwriting unrelated work.
 - The goal would still boil down to "improve", "finish", "clean up", or "make better" without verifiable product evidence.
+- No clarification question has been answered in the current Goalify session.
 
 Stop when:
 - <product acceptance state> is demonstrated by passing checks plus concrete product evidence.
