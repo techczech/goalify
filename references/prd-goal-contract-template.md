@@ -1,6 +1,6 @@
 # PRD Goal Contract Template
 
-Use this template when a `/goal` prompt should be tied to product intent rather than only code elements. First reconstruct a compact PRD from the repository's own stated goals, then turn that PRD into a durable Codex goal.
+Use this template when a `/goal` prompt should be tied to product intent rather than only code elements. First reconstruct or read a PRD from the repository's own stated goals, then turn that PRD into a durable Codex goal. If the PRD is too generic, switch to `prd-interview-history-template.md` before drafting the goal.
 
 ```text
 /goal Complete <product outcome> without stopping until <verifiable product acceptance state>.
@@ -15,6 +15,9 @@ PRD trace:
 - Product purpose: <why the project exists, in the project's own terms>
 - Target users/workflow: <who uses it and what they are trying to do>
 - Current stated goals: <features, behaviours, release goals, reliability goals>
+- Product principles: <rules that distinguish the right product from a generic improvement>
+- Feature inventory: <core now, incomplete, missing, deferred, out of scope>
+- Quality criteria: <observable standards for UX, correctness, reliability, privacy, accessibility, maintainability, or docs>
 - Non-goals/constraints: <what must remain out of scope>
 - Success criteria: <observable user-facing and technical acceptance criteria>
 
@@ -27,11 +30,12 @@ Scope:
 - Do not touch: <unrelated features, generated files, secrets, publishing steps, broad redesigns>
 
 Checkpoints:
-1. Reconstruct a concise PRD from the stated-goal sources and save or report it before implementation.
-2. Map PRD acceptance criteria to code/docs/tests and identify the smallest product gap.
-3. Implement the smallest coherent change set that closes that gap.
-4. Validate with the repo's real checks and any manual/product evidence the PRD requires.
-5. Update docs only where behaviour or acceptance criteria changed.
+1. Reconstruct or read the PRD from the stated-goal sources and save or report it before implementation.
+2. Verify the PRD is not a generic "improve this" brief: it must name product principles, feature boundaries, quality criteria, acceptance evidence, and non-goals.
+3. Map PRD acceptance criteria to code/docs/tests and identify the smallest product gap.
+4. Implement the smallest coherent change set that closes that gap.
+5. Validate with the repo's real checks and any manual/product evidence the PRD requires.
+6. Update docs only where behaviour or acceptance criteria changed.
 
 Validation loop:
 - Run <repo command>.
@@ -45,6 +49,7 @@ Progress log:
 Pause if:
 - The PRD source is ambiguous or conflicts with code behaviour.
 - The work requires a new product decision, privacy change, broad redesign, external service, secret, destructive command, release/publish step, or overwriting unrelated work.
+- The goal would still boil down to "improve", "finish", "clean up", or "make better" without verifiable product evidence.
 
 Stop when:
 - <product acceptance state> is demonstrated by passing checks plus concrete product evidence.

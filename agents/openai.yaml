@@ -1,4 +1,4 @@
 interface:
   display_name: "Goalify"
-  short_description: "Turn a project, PRD, or product interview into a Codex /goal task."
-  default_prompt: "Interview me about this project, review the code and repo history, construct a compact PRD, then draft a Codex /goal prompt with product trace, checkpoints, validation commands, and stopping conditions."
+  short_description: "Turn a project interview into a PRD and Codex /goal task."
+  default_prompt: "Interview me about this project, review the code and repo history, build a proper PRD with principles, feature gaps, quality criteria, acceptance evidence, and non-goals, then draft a Codex /goal only when the PRD is specific enough to execute."
