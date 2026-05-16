@@ -14,6 +14,10 @@ Last updated:
 Purpose:
 - <why this project should exist, in user-facing terms>
 
+Key terms:
+- <canonical term>: <tight product/domain definition>
+- Avoid: <ambiguous synonym or rejected term>
+
 Primary user:
 - <person or role>
 
@@ -50,6 +54,11 @@ Acceptance criteria:
 - <criterion that can be verified by a command, test, artifact, screenshot, or demo>
 - <criterion that confirms documentation or product understanding is updated>
 
+Clarification history:
+- Question: <clarifying question the agent asked>
+- Answer: <user answer>
+- Decision: <concept, boundary, quality criterion, non-goal, feature priority, or acceptance criterion clarified>
+
 Evidence:
 - Source: <docs, instructions, issues, plans>
 - History: <commits, releases, tags, direction of travel>
@@ -66,6 +75,8 @@ Recommended goal:
 ## Rules
 
 - Prefer observable product states over generic improvements.
+- A PRD is not ready unless at least one clarification question has been answered during the Goalify session.
+- Clarify key terms before turning the PRD into work. The goal should not depend on ambiguous words.
 - Keep definitions and principles short enough to use during implementation.
 - Record feature boundaries explicitly; the no-s are as useful as the yes-s.
 - Separate evidence from inference.

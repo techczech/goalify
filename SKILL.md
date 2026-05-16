@@ -9,12 +9,26 @@ description: Turn a coding or development project into a clear PRD and effective
 
 Convert a project into a durable product understanding and, when appropriate, a Codex `/goal` contract. The output should help Codex keep working across turns on one verifiable objective, not merely restate a normal coding prompt.
 
+Goalify is an interview skill before it is a drafting skill. Its job is to clarify concepts, sharpen terminology, and test the user's assumptions until the project language is clear enough for an agent to work safely.
+
 Use official Codex guidance as the baseline: `/goal` is for long-running work with one objective, a validation loop, and a clear end state. It is experimental and requires `features.goals` to be enabled, either through `/experimental` or `[features] goals = true` in `config.toml`.
 
 Goalify has two products:
 
 - A PRD document that captures the project's purpose, users, principles, features, missing pieces, quality criteria, non-goals, and open decisions.
 - A `/goal` prompt generated from that PRD once the product outcome is clear enough to execute.
+
+## Non-Negotiable Interview Contract
+
+When Goalify is used for a PRD, roadmap, product goal, feature goal, or Codex `/goal`, you must ask clarification questions before declaring the work ready.
+
+- Ask at least one real clarification question and wait for the user's answer before producing a final PRD, final goal prompt, or "ready" conclusion.
+- Default to one question at a time. Do not dump a questionnaire unless the user explicitly asks for a batch.
+- For each question, provide your recommended answer and the evidence or assumption behind it. The user should react to a concrete proposal.
+- A long user suggestion is not a substitute for the interview. Treat it as evidence, identify the most load-bearing ambiguous term or decision, and ask about that first.
+- If you can answer a question by reading docs, code, tests, issues, or history, inspect those first. Then ask only the unresolved conceptual question.
+- Do not say "I have enough" until the user has answered at least one clarification question in this Goalify session and the PRD readiness check passes.
+- If the user asks you to "just draft it", still ask one concept-clarifying question first unless they explicitly say "do not ask questions".
 
 ## Workflow
 
@@ -25,23 +39,27 @@ Goalify has two products:
    - Check `git status --short --branch`.
    - Note dirty, ahead/behind, or untracked state in the goal report because a long-running goal may otherwise trample user work.
    - If the goal would create or edit files, include a first checkpoint to pull/rebase safely and preserve local changes.
-3. Decide whether the next output should be a PRD, a `/goal`, or both:
+3. Build a concept map before drafting:
+   - Identify key terms the user used, terms from docs, and terms implied by the code.
+   - Flag overloaded words, synonyms, unresolved concepts, and conflicting definitions.
+   - Use concrete scenarios to expose whether the terms actually mean what everyone thinks they mean.
+4. Decide whether the next output should be a PRD, a `/goal`, or both:
    - Use `/goal` for migrations, large refactors, release hardening, multi-step test repair, benchmark/eval improvement, prototype completion, documentation refreshes tied to validation, and deployment retry loops.
    - Use PRD-first mode when the user asks to be interviewed, says the goal is unclear, asks for a proper document, asks for product principles, or wants to decide what the project should become before starting a long-running goal.
    - Do not force `/goal` onto a loose backlog, a vague aspiration, a one-file edit, or unrelated chores. In those cases, say that a normal prompt or a split set of goals is better.
-4. Choose the goal frame:
+5. Choose the goal frame:
    - Use an engineering contract when the user wants implementation, validation, migration, tests, release hardening, or code quality work.
    - Use a PRD contract when the user wants the goal tied to product intent, stated goals, user workflow, non-goals, acceptance criteria, or roadmap shape.
    - Use a constructed PRD contract when the user asks to build the PRD by interviewing them and reviewing code or repo history. In this mode, do not rush to the `/goal`; build the PRD first.
-5. Choose one objective:
+6. Choose one objective:
    - Make it bigger than one turn but smaller than "improve this whole repo".
    - Anchor it in repo evidence: current scripts, docs, missing validation, stated non-goals, failing checks, release routine, or product goals.
-6. Draft the goal using the relevant contract:
+7. Draft the goal using the relevant contract:
    - Use `references/goal-contract-template.md` for engineering-contract goals.
    - Use `references/prd-goal-contract-template.md` for product/PRD-shaped goals.
    - Use `references/prd-interview-history-template.md` when the PRD must be constructed from user interview plus repo evidence.
    - Use `references/prd-document-template.md` when writing or revising the PRD document itself.
-7. Include the exact command or first message the user can paste into Codex:
+8. Include the exact command or first message the user can paste into Codex:
    - Start with `/goal`.
    - Name the objective and the stopping condition in the first sentence.
    - Keep the rest as structured instructions inside the same prompt.
@@ -61,10 +79,11 @@ If the user asks for several options, provide at most three goal candidates and 
 For interview-led PRD mode, return work in stages:
 
 1. `Evidence pass`: what the repo already says, what history suggests, what the code contradicts, and what remains unknown.
-2. `Interview`: ask one question at a time unless the user explicitly asks for a batch. For each question, provide a recommended answer based on the evidence and explain what decision it unlocks.
-3. `Working PRD`: update the PRD draft as decisions crystallise. If the user asked for a file, create or update it in the requested path; otherwise present it in chat.
-4. `Goal readiness`: say whether the PRD is ready for a `/goal`, and list the remaining decisions if it is not.
-5. `Recommended /goal prompt`: generate this only after the PRD has a concrete product outcome, acceptance criteria, non-goals, and validation evidence.
+2. `Concepts to clarify`: key terms, overloaded words, conflicting definitions, and assumptions that would change the goal.
+3. `Interview`: ask one question at a time unless the user explicitly asks for a batch. For each question, provide a recommended answer based on the evidence and explain what decision it unlocks. End the message on the question and wait.
+4. `Working PRD`: update the PRD draft as decisions crystallise. If the user asked for a file, create or update it in the requested path; otherwise present it in chat.
+5. `Goal readiness`: say whether the PRD is ready for a `/goal`, and list the remaining decisions if it is not.
+6. `Recommended /goal prompt`: generate this only after the PRD has a concrete product outcome, acceptance criteria, non-goals, validation evidence, and at least one answered clarification question.
 
 ## Constructing a PRD
 
@@ -80,6 +99,7 @@ When the user wants the PRD constructed through interview plus repo review:
    - For each question, provide your recommended answer. The user should be reacting to a concrete proposal, not a blank form.
    - Ask about the intended user, painful workflow, desired product state, feature boundaries, missing features, quality criteria, non-goals, success evidence, and priority trade-offs.
    - Do not ask questions already answered clearly by repo docs or history.
+   - Never move straight from a long user suggestion to a completed PRD or `/goal`. Ask the first load-bearing clarification question first.
 3. Challenge fuzzy or contradictory language:
    - Call out vague outcomes such as "improve", "make better", "clean up", or "finish the app" and replace them with observable product states.
    - If the user uses a term that conflicts with repo docs or code behaviour, surface the conflict immediately and ask which meaning should win.
@@ -110,6 +130,8 @@ When using a constructed PRD, also include the interview questions, the user's a
 
 Reject generic goals. A goal is not ready if it can be summarised as "improve the project", "make the docs better", "clean up the UI", or "finish the app" without naming the user-visible state, acceptance criteria, and validation evidence.
 
+Reject ungrilled goals. A goal is not ready if no clarification question has been answered in the current Goalify session.
+
 ## Prompting Rules
 
 - Prefer concrete repo commands over generic phrases like "run tests".
@@ -119,6 +141,7 @@ Reject generic goals. A goal is not ready if it can be summarised as "improve th
 - Follow the spelling, terminology, and tone already used by the target project.
 - Never invent tests, scripts, CI, pricing, APIs, or release steps. If validation is missing, make "add minimal validation" an explicit checkpoint.
 - Do not hide unresolved product decisions inside implementation tasks. Ask, decide, or mark the assumption before drafting the `/goal`.
+- Prefer ending an early Goalify response with the next question rather than a completed artifact. The interview is the work.
 
 ## Reference
 
