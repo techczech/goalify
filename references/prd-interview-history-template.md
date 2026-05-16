@@ -1,8 +1,15 @@
 # PRD Interview And History Template
 
-Use this template when the PRD does not already exist clearly enough and must be constructed from user interview plus repo evidence. The first deliverable is shared product understanding. Draft the `/goal` only after the PRD is specific enough to execute.
+Use this template when the PRD does not already exist clearly enough and must be constructed from user interview plus repo evidence. The first deliverable is shared product understanding. Draft the `/goal` only after the PRD/spec is specific enough to execute.
 
 The interview is mandatory. Do not treat a long user suggestion as enough context. It is raw material for the first clarification question.
+
+Create separate documents when writing files:
+
+- PRD/spec: the tight implementation target. Use `prd-document-template.md`.
+- Discovery notes: evidence, interview trail, repo history, AGENTS.md observations, assumptions, and process notes. Use `discovery-notes-template.md`.
+
+Do not put discovery notes in the PRD/spec.
 
 ## Evidence Pass
 
@@ -95,7 +102,32 @@ Surface contradictions directly:
 The README frames this as <X>, but the code currently optimises for <Y>. I recommend treating <X> as the product principle and <Y> as implementation drift unless you tell me otherwise. Is that right?
 ```
 
-## Constructed PRD Shape
+## Discovery Notes Shape
+
+Use `discovery-notes-template.md` for the full shape. At minimum, include:
+
+```text
+# <Project Name> Discovery Notes
+
+Repo evidence:
+- <docs, local instructions, code, history>
+
+Concept map:
+- <canonical, ambiguous, conflicting, missing terms>
+
+Interview trail:
+- Question: <question>
+- Recommended answer: <recommendation>
+- User answer: <answer>
+- Decision: <decision>
+
+Assumptions and open questions:
+- <discovery/process notes>
+```
+
+## PRD/Spec Shape
+
+This is the tight document that the `/goal` should reference. Do not include evidence, interview history, clarification history, AGENTS.md commentary, repo-history notes, or process notes.
 
 ```text
 # <Project Name> PRD
@@ -104,7 +136,7 @@ Status:
 - Draft | User-confirmed | Ready for /goal
 
 Product purpose:
-- <one-paragraph purpose grounded in user answers and repo evidence>
+- <one-paragraph product purpose>
 
 Key terms:
 - <canonical term>: <tight definition>
@@ -115,20 +147,15 @@ Primary user and workflow:
 - Workflow: <before -> during -> after>
 - Pain removed: <specific friction>
 
-Current evidence:
-- Source evidence: <docs/instructions>
-- History evidence: <commit/tag/release direction>
-- Code evidence: <implemented shape>
-
 Product principles:
-- <principle 1 with evidence or user confirmation>
-- <principle 2 with evidence or user confirmation>
-- <principle 3 with evidence or user confirmation>
+- <principle 1>
+- <principle 2>
+- <principle 3>
 
 Feature inventory:
 - Core now: <features that already define the product>
 - Incomplete: <features present but not good enough>
-- Missing: <features the user wants or evidence implies>
+- Missing: <features required for the next useful version>
 - Not a feature: <tempting but rejected features>
 
 Quality criteria:
@@ -143,21 +170,13 @@ Non-goals and constraints:
 - <privacy/security/permission/performance/release constraint>
 
 Acceptance criteria:
-- <user-facing criterion with evidence>
+- <user-facing criterion with verification method>
 - <technical criterion with validation command or artifact>
 - <documentation/PRD criterion if needed>
 
 Open assumptions:
-- <assumption, labelled as user-confirmed, repo-inferred, or unresolved>
+- <product decision still needed before implementation, or "None">
 
-Clarification history:
-- Asked: <question>
-- Answered: <user answer>
-- Decision: <concept, boundary, criterion, or priority clarified>
-
-Goal candidates:
-- Recommended: <one bounded product outcome>
-- Later: <deferred goal>
 ```
 
 ## PRD Readiness Check
@@ -171,48 +190,39 @@ A PRD is ready for `/goal` only when:
 - Quality criteria are observable.
 - Acceptance criteria can be verified by commands, artifacts, screenshots, demos, or manual checks.
 - At least one clarification question has been answered in this Goalify session.
-- Open assumptions are either low-risk or explicitly called out in the `/goal` pause conditions.
+- Open product decisions are either resolved or explicitly called out in the `/goal` pause conditions.
+- Process notes, evidence history, and interview history are in discovery notes, not the PRD/spec.
 
 If this check fails, keep interviewing or inspect more repo evidence. Do not paper over gaps with generic language.
 
 ## Goal Prompt Template
 
 ```text
-/goal Complete <constructed-PRD outcome> without stopping until <acceptance criteria and validation evidence> are satisfied.
+/goal Complete the product outcome specified in <PRD/spec path> without stopping until its acceptance criteria and validation evidence are satisfied.
 
 Project: <absolute path or repo name>
 
 Read first:
-- <constructed PRD if saved, otherwise the interview answers in this prompt>
-- <repo source files/docs/history evidence>
+- <PRD/spec path>
+- The repo's local agent instructions and developer docs needed to work safely.
 
-Constructed PRD:
-- Product purpose: <purpose>
-- Key terms: <canonical concepts and resolved ambiguities>
-- Primary user/workflow: <user/workflow>
-- Product principles: <principles>
-- Feature inventory: <core/incomplete/missing/out-of-scope>
-- Quality criteria: <observable standards>
-- Non-goals/constraints: <constraints>
-- Acceptance criteria: <criteria>
-- Clarification history: <questions answered and decisions made>
-- Open assumptions: <assumptions>
+Do not use discovery notes as the implementation specification. If the PRD/spec has an ambiguity, pause for clarification instead of mining discovery notes for hidden requirements.
 
 Objective:
-- <one product outcome based on the constructed PRD>
+- Implement the recommended product outcome in the PRD/spec.
 
 Scope:
-- Change: <allowed docs/code/tests/UI>
-- Preserve: <constraints and product principles>
+- Change: <allowed docs/code/tests/UI named by the PRD/spec>
+- Preserve: <constraints and product principles from the PRD/spec>
 - Do not touch: <unrelated/generated/secret/release areas>
 
 Checkpoints:
-1. Re-read the constructed PRD and repo instructions; note any conflicts before editing.
-2. Map acceptance criteria to code, docs, tests, and manual verification.
+1. Re-read the PRD/spec and repo instructions; note any conflicts before editing.
+2. Map PRD/spec acceptance criteria to code, docs, tests, and manual verification.
 3. Identify the smallest coherent product gap that satisfies the recommended goal.
 4. Implement the change set that closes that gap without drifting into later goals.
 5. Validate with repo commands and product evidence.
-6. Update the PRD or docs if implementation clarifies the product contract.
+6. Update the PRD/spec or docs only where product behaviour, constraints, or acceptance criteria changed.
 
 Validation loop:
 - Run <repo command>.
@@ -228,8 +238,8 @@ Pause if:
 - The implementation would satisfy a vague improvement but not the PRD acceptance criteria.
 
 Stop when:
-- <acceptance criteria> pass and the final handoff connects changes back to the constructed PRD.
+- <acceptance criteria> pass and the final handoff connects changes back to the PRD/spec.
 
 Final handoff:
-- Include the PRD summary, interview assumptions, repo-history evidence, changes, validation results, and remaining decisions.
+- Include changed files, PRD/spec criteria satisfied, validation results, and remaining product decisions.
 ```

@@ -1,4 +1,4 @@
 interface:
   display_name: "Goalify"
   short_description: "Grill a project into a PRD and Codex /goal task."
-  default_prompt: "Interview me thoroughly about this project before drafting anything final. Review the code and repo history, clarify key terms and concepts, ask one evidence-backed question at a time with your recommended answer, build a proper PRD with principles, feature gaps, quality criteria, acceptance evidence, and non-goals, then draft a Codex /goal only after I have answered clarification questions and the PRD is specific enough to execute."
+  default_prompt: "Interview me thoroughly about this project before drafting anything final. Review the code and repo history, clarify key terms and concepts, ask one evidence-backed question at a time with your recommended answer, write a tight PRD/spec as a separate implementation-target document, put evidence and interview notes in a separate discovery-notes document, then give me a Codex /goal prompt in chat that references the PRD/spec path."
