@@ -11,7 +11,7 @@ Convert a project into a durable product understanding and, when appropriate, a 
 
 Goalify is an interview skill before it is a drafting skill. Its job is to clarify concepts, sharpen terminology, and test the user's assumptions until the project language is clear enough for an agent to work safely.
 
-Use official Codex guidance as the baseline: `/goal` is for long-running work with one objective, a validation loop, and a clear end state. It is experimental and requires `features.goals` to be enabled, either through `/experimental` or `[features] goals = true` in `config.toml`.
+Use official Codex guidance as the baseline: `/goal` is for long-running work with one objective, a validation loop, and a clear end state. Goals are a standard Codex CLI feature (no longer experimental as of 2026-07; no `features.goals` flag needed).
 
 Goalify has three separate products:
 
